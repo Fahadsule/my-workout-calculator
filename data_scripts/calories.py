@@ -48,7 +48,7 @@ print(df)
 
 
 def get_maintainance():
-    today_str = today.strftime('%Y-%m-%d')  # Will be '2026-02-09'
+    today_str = today.strftime('%Y-%m-%d')  
     today_row = df[df['l_date'] == today_str]
     
     if not today_row.empty:
