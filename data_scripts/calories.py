@@ -3,15 +3,17 @@ from datetime import date
 
 
 #get initial dieting states
-suitable_replies=['A','B','C']
-while True:
-    input_variable = input("What phase of dieting are we in my boiii🤣\n\tchoose from the following...\n\t A FOR NONE\n\t B FOR BULK \n\t C FOR CUT   ").upper()
+def get_diet_phase():
+    suitable_replies=['A','B','C']
+    while True:
+        input_variable = input("What phase of dieting are we in my boiii🤣\n\tchoose from the following...\n\t A FOR NONE\n\t B FOR BULK \n\t C FOR CUT   ").upper()
     
-    if input_variable in suitable_replies:
-        diet_phase = input_variable
-        break
-    else:
-        print("Invalid response, try again!")
+        if input_variable in suitable_replies:
+            diet_phase = input_variable
+            break
+        else:
+            print("Invalid response, try again!")
+
 
 #Get my age
 birthday = date(2006, 9, 20)  # Replace with your birthday (year, month, day)
@@ -27,17 +29,20 @@ activity=1.6
 df['maintainance_calories']=df['BMR']*activity
 df['calorie_difference']=df['calories_taken']-df['maintainance_calories']
 
-
+#Label the calorie_surplus and calorie_deficit groups.
 df['calorie_type'] = 'maintainance'  # default value
 df.loc[df['calorie_difference'] > 90, 'calorie_type'] = 'calorie_surplus'
 df.loc[df['calorie_difference'] < 0, 'calorie_type'] = 'calorie_deficit'
 df.loc[(df['calorie_difference'] > 0) & (df['calorie_difference'] <= 90), 'calorie_type'] = 'slight_calorie_surplus'
 
-
+#Determine mass change from calorie difference
 df['expected_mass_change']=str(0)+"kg "+"no_change"#default value
-df.loc[df['calorie_type']=='calorie_surplus', 'expected_mass_change']=(df['calorie_difference']-90)/7700
+df.loc[df['calorie_type']=='calorie_surplus', 'expected_mass_change']=(df['calorie_difference']-90)/7700#7700 Kcal per kg of fat, 90 initial Kcal go to building muscle
 df.loc[df['calorie_type']=='calorie_deficit', 'expected_mass_change']=df['calorie_difference']/7700
-df.loc[df['calorie_type']=='slight_calorie_surplus', 'expected_mass_change']=df['calorie_difference']/3000
+df.loc[df['calorie_type']=='slight_calorie_surplus', 'expected_mass_change']=df['calorie_difference']/3000#in slight surplus all go to muscle
+
+df['expected_mass_change'] = pd.to_numeric(df['expected_mass_change'], errors='coerce').fillna(0)
+df['actual_mass_change'] = df['Body_weight'].diff()
 
 print(df)
 
