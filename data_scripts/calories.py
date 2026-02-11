@@ -49,7 +49,8 @@ print(df)
 
 def get_maintainance():
     today_str = today.strftime('%Y-%m-%d')  
-    today_row = df[df['l_date'] == today_str]
+    temp_df=pd.read_csv("data/daily.csv")
+    today_row = temp_df[temp_df['l_date'] == today_str]
     
     if not today_row.empty:
         return today_row['maintainance_calories'].values[0]
